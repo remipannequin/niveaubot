@@ -1,0 +1,24 @@
+{
+  "name": "niveaubot",
+  "version": "1.0.0",
+  "description": "Discord bot to query and alert about river levels",
+  "main": "bot.js",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/remipannequin/niveaubot.git"
+  },
+  "author": "Rémi Pannequin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/remipannequin/niveaubot/issues"
+  },
+  "homepage": "https://github.com/remipannequin/niveaubot#readme"
+}
