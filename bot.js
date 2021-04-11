@@ -1,4 +1,4 @@
-//'use strict';
+'use strict';
 
 /**
  * A ping pong bot, whenever you send "ping", it replies "pong".
@@ -13,7 +13,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 // Use node-fetch to get river level data
 const fetch = require('node-fetch');
 
-
+const fs = require('fs');
 
 
 //bot.on('message', message => {
@@ -51,7 +51,7 @@ client.on('message', message => {
 
 
 function queryRiverLevel(stationid, channel) {
-    url = `http://www.vigicrues.gouv.fr/services/observations.json?CdStationHydro=${stationid}&FormatDate=iso&GrdSerie=Q`
+    let url = `http://www.vigicrues.gouv.fr/services/observations.json?CdStationHydro=${stationid}&FormatDate=iso&GrdSerie=Q`
     console.log('querying station '+stationid)
         
     resp = fetch(url)
@@ -93,8 +93,18 @@ function query(river, channel) {
 }
 
 
+
+
+fs.readFile('token', (err, data) => {
+    if (err) throw err;
+    let token = data.toString().trim();
+    console.log(`Got token "${token}"`);
+    client.login(token);
+});
+
+
 // Log our bot in using the token from https://discord.com/developers/applications
-client.login('ODMwMzQ4ODQ2MjAyMDkzNTc5.YHFYoA.VnL827pLpwSTgsaay1Bg6DSh0Pk');
+
 
 // URL to join the bot to a server:
 // https://discord.com/api/oauth2/authorize?client_id=830348846202093579&scope=bot&permissions=3072
