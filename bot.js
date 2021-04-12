@@ -33,7 +33,7 @@ client.on('ready', () => {
 client.on('message', message => {
   // If the message is "ping"
   // TODO: create a function that match a regexp and return content
-  if (message.content.startsWith('!')) {
+  if (message.member.user !== client.user) {
     let cmd = rivers.parseCmd(message.content);
     if (cmd != null) {
         // Send response to the same channel
