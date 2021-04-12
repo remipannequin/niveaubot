@@ -6,8 +6,24 @@
             "id": "A550061001"
         },
         {
-            "keys": ["Madon", "Puligny"],
+            "keys": ["Madon", "Pulligny"],
             "id": "A543101001"
+        },
+        {
+            "keys": ["Épinal", "Archette"],
+            "id": "A443064001"
+        },
+        {
+            "keys": ["Toul"],
+            "id": "A573061001"
+        },
+        {
+            "keys": ["Plaine"],
+            "id": "A623201001"
+        },
+        {
+            "keys": ["Meuse", "Commercy"],
+            "id": "B213001001"
         }
     ],
 "default": "A550061001"
