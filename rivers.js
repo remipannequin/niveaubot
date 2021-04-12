@@ -26,8 +26,8 @@ function QueryCommand(flow, loc) {
  * @param msg 
  */
 rivers.parseCmd = function parseCmd(msg) {
-    let queryFlow = /\!\W*([Dd][ée]bit+)\W+(.*)/i;
-    let queryHeight = /\!\W*([Nn]iveau|[Hh]auteur)\W+(.*)/i;
+    let queryFlow = /([Dd][ée]bit+)\W+(\w*)\W*?/i;
+    let queryHeight = /([Nn]iveau|[Hh]auteur)\W+(\w*)\W*?/i;
     let grp = queryFlow.exec(msg);
     if (grp != null && grp.length >= 3) {
         return new QueryCommand(true, grp[2]);
@@ -68,10 +68,12 @@ rivers.parseCmd = function parseCmd(msg) {
 /**
  * Create a new hydro observation object
  */
-function ObsHydro(d, loc) {
-    this.date = new sugar.Date(d['DtObsHydro']);
-    this.value = d['ResObsHydro'];
-    this.location = loc;
+class ObsHydro {
+    constructor(d, loc) {
+        this.date = new sugar.Date(d['DtObsHydro']);
+        this.value = d['ResObsHydro'];
+        this.location = loc;
+    }
 }
 
 
@@ -95,7 +97,7 @@ rivers.processJson = function processJson(json) {
 
 
 /**
- * Thransform the hydrological data into a analysis message
+ * Transform the hydrological data into a analysis message
  * 
  * @param {*} obs the data to analyse
  * @param flow if true: streamflow, else height
@@ -104,7 +106,8 @@ rivers.processJson = function processJson(json) {
 rivers.displayLevel = function displayLevel(obs, flow) {
     let last_obs = obs[obs.length-1];
     let d = last_obs.date;
-    let today = sugar.Date();
+    //TODO: try to evaluate evolution (on the last 6h)
+
     let date, mesure, unit;
     if (d.isToday().raw) {
         date = `aujourd'hui à ${d.format('%R')}`;

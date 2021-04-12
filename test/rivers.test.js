@@ -7,24 +7,24 @@ const sugar = require('sugar');
 
 describe('Test command parsing', () => {
    it('should get river name', () => {
-      cmd = rivers.parseCmd('! niveau Moselle');
+      cmd = rivers.parseCmd('niveau Moselle ?');
       assert.strictEqual(cmd.location, 'Moselle');
       assert.strictEqual(cmd.flow, false);
-      cmd = rivers.parseCmd('!   Niveau    Moselle');
+      cmd = rivers.parseCmd('Niveau    Moselle ?');
       assert.strictEqual(cmd.location, 'Moselle');
       assert.strictEqual(cmd.flow, false);
-      cmd = rivers.parseCmd('! niveau-Moselle');
+      cmd = rivers.parseCmd('niveau-Moselle ?');
       assert.strictEqual(cmd.location, 'Moselle');
       assert.strictEqual(cmd.flow, false);
-      cmd = rivers.parseCmd('! niveau Meuse');
+      cmd = rivers.parseCmd('niveau Meuse ?');
       assert.strictEqual(cmd.location, 'Meuse');
-      cmd = rivers.parseCmd('! niveau Meuse');
+      cmd = rivers.parseCmd('niveau Meuse ?');
       
-      cmd = rivers.parseCmd('! Hauteur Moselle');
+      cmd = rivers.parseCmd('Hauteur Moselle ?');
       assert.strictEqual(cmd.location, 'Moselle');
       assert.strictEqual(cmd.flow, false);
 
-      cmd = rivers.parseCmd('! Débit Moselle');
+      cmd = rivers.parseCmd('Débit Moselle ?');
       assert.strictEqual(cmd.location, 'Moselle');
       assert.strictEqual(cmd.flow, true);
 
