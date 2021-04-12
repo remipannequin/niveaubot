@@ -154,7 +154,7 @@ rivers.searchStation = function searchStation(name) {
     }
     for (const iter of rivers.stationDb) {
         for (const k of iter["keys"]) {
-            if (name.localeCompare(k)) {
+            if (name.localeCompare(k) == 0) {
                 return iter["id"];
             }
         }

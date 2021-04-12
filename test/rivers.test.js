@@ -68,6 +68,7 @@ describe('Station DB', () => {
    it('should return station ID', () => {
       assert.strictEqual(rivers.searchStation("Moselle"), 'A550061001');
       assert.strictEqual(rivers.searchStation("moselle"), 'A550061001');
-      assert.strictEqual(rivers.searchStation("psv"), 'A550061001');
+      assert.strictEqual(rivers.searchStation("psv"),     'A550061001');
+      assert.strictEqual(rivers.searchStation("Madon"),   'A543101001');
    })
 });
