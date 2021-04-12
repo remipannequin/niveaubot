@@ -34,10 +34,10 @@ client.on('message', message => {
   // If the message is "ping"
   // TODO: create a function that match a regexp and return content
   if (message.content.startsWith('!')) {
-    let river = rivers.parseCmd(message.content);
-    if (river != null) {
+    let cmd = rivers.parseCmd(message.content);
+    if (cmd != null) {
         // Send response to the same channel
-        rivers.query(river, msg => message.channel.send(msg));
+        rivers.query(cmd, msg => message.channel.send(msg));
     }
   }
 });

@@ -1,0 +1,14 @@
+{
+"stations":
+    [
+        {  
+            "keys": ["Moselle", "Psv", "club"], 
+            "id": "A550061001"
+        },
+        {
+            "keys": ["Madon", "Puligny"],
+            "id": "A543101001"
+        }
+    ],
+"default": "A550061001"
+}

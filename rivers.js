@@ -10,83 +10,157 @@ const fetch = require('node-fetch');
 
 const fs = require('fs');
 
+//Date formating is easier with sugar
+const sugar = require('sugar');
+require('sugar/locales/fr');
+sugar.Date.setLocale('fr-FR');
 
+
+function QueryCommand(flow, loc) {
+    this.flow = flow;
+    this.location = loc;
+}
 
 /**
  * 
  * @param msg 
  */
 rivers.parseCmd = function parseCmd(msg) {
-    let re = /\!\W*niveau\W+(.*)/i;
-    let grp = re.exec(msg);
-    if (grp != null && grp.length > 0) {
-        return grp[1];
-    } else {
-        console.log(`unable to find river in command ${msg}`);
+    let queryFlow = /\!\W*([Dd][ée]bit+)\W+(.*)/i;
+    let queryHeight = /\!\W*([Nn]iveau|[Hh]auteur)\W+(.*)/i;
+    let grp = queryFlow.exec(msg);
+    if (grp != null && grp.length >= 3) {
+        return new QueryCommand(true, grp[2]);
     }
+    grp = queryHeight.exec(msg);
+    if (grp != null && grp.length >= 3) {
+        return new QueryCommand(false, grp[2]);   
+    }
+    //TODO: add other commands
+
+
+    console.log(`unable to find river in command ${msg}`);
 }
 
 
 /**
+ * Query the webservice and process response
  * 
- * @param stationid 
- * @param channel 
+ * @param stationid the stationID to query
+ * @param cb a function(string) that is called when the data has been acquired and processed 
+ * @param  
  */
- function queryRiverLevel(stationid, cb) {
-    let url = `http://www.vigicrues.gouv.fr/services/observations.json?CdStationHydro=${stationid}&FormatDate=iso&GrdSerie=Q`
+ function queryRiverLevel(stationid, cb, flow) {
+    let url = `http://www.vigicrues.gouv.fr/services/observations.json?CdStationHydro=${stationid}&FormatDate=iso`
+    if (flow) {
+        url += '&GrdSerie=Q'; 
+    }
     console.log('querying station '+stationid)
         
     fetch(url)
         .then(resp => resp.json())
-        .then(json => processLevel(json))
-        .then(curlev => displayLevel(curlev))
+        .then(json => rivers.processJson(json))
+        .then(obs => rivers.displayLevel(obs, flow))
         .then(cb)
-   //TODO make this function return a Promise (with the requested value inside)
 }
 
 
 /**
- * Process the hydrology data:
- * Extract the last value
+ * Create a new hydro observation object
+ */
+function ObsHydro(d, loc) {
+    this.date = new sugar.Date(d['DtObsHydro']);
+    this.value = d['ResObsHydro'];
+    this.location = loc;
+}
+
+
+
+/**
+ * Process the hydrology data: return the values
+ * 
  * @param json 
- * @returns 
+ * @returns a ObsHydro[]
  */
-function processLevel(json) {
+rivers.processJson = function processJson(json) {
     let obs = json['Serie']['ObssHydro']
-    return obs[obs.length-1]
+    let station = json['Serie']['LbStationHydro'];
+    // Turn them into an array of ObsHydro
+    let result = [];
+    for (const iterator of obs) {
+        result.push(new ObsHydro(iterator, station))
+    }
+    return result;
 }
+
+
+/**
+ * Thransform the hydrological data into a analysis message
+ * 
+ * @param {*} obs the data to analyse
+ * @param flow if true: streamflow, else height
+ * @returns a string resulting from the analysis of the data
+ */
+rivers.displayLevel = function displayLevel(obs, flow) {
+    let last_obs = obs[obs.length-1];
+    let d = last_obs.date;
+    let today = sugar.Date();
+    let date, mesure, unit;
+    if (d.isToday().raw) {
+        date = `aujourd'hui à ${d.format('%R')}`;
+    } else {
+        date = d.format('le %A %d %B à %R');
+    }
+    if (flow) {
+        mesure = 'Débit';
+        unit = 'm3/s'
+    } else {
+        mesure = 'Niveau';
+        unit = 'm';
+    }
+    return `${mesure} à ${last_obs.location}, ${date}: ${last_obs.value} ${unit}`;
+}
+
 
 /**
  * 
- * @param {*} obs 
+ * @param {QueryCmd} cmd command to execute
+ * @param {} cb callback
+ */
+rivers.query = function query(cmd, cb) {
+    let stationid = rivers.searchStation(cmd.location);
+    //Check value is right
+    if (stationid != null) {
+        queryRiverLevel(stationid, cb, cmd.flow);
+    }
+}
+
+
+/**
+ * 
+ * @param {string} name 
  * @returns 
  */
-function displayLevel(obs) {
-    return `Débit à ${obs['DtObsHydro']}: ${obs['ResObsHydro']} m3/s`
-}
-
-
-/**
- *
- * 
- * TODO add the station ID in a config file 
- * @param river 
- * @param channel 
- */
-rivers.query = function query(river, cb) {
-    let stationid;
-    switch (river) {
-        case "Moselle":
-            stationid = "A550061001";
-            break;
-        case "Madon":
-            stationid = "A543101001";
-            break;
-        default:
-            //TODO ?
+rivers.searchStation = function searchStation(name) {
+    if (rivers.stationDb == null) {
+        //TODO check file existence and format
+        let station_json = fs.readFileSync('stations.json');
+        let data = JSON.parse(station_json);
+        rivers.stationDb = data['stations'];
+        rivers.defaultStation = data['default'];
     }
-    //TODO check values are right
-    queryRiverLevel(stationid, cb)
+    for (const iter of rivers.stationDb) {
+        for (const k of iter["keys"]) {
+            if (name.localeCompare(k)) {
+                return iter["id"];
+            }
+        }
+    }
+    if (rivers.hasOwnProperty("defaultStation")) {
+        return rivers.defaultStation;
+    }
+    console.log("unable to find a stationID for "+name);
 }
+
 
 module.exports = rivers;
