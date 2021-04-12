@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="21.279695"
-     inkscape:cy="19.273294"
+     inkscape:cx="0.69933786"
+     inkscape:cy="18.916151"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -57,8 +57,21 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-284.3)">
+    <rect
+       style="fill:#babdb6;fill-opacity:1;stroke:none;stroke-width:0.92383456;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect836"
+       width="15.550437"
+       height="14.066712"
+       x="-1.6363289"
+       y="282.96133" />
     <path
-       style="fill:#729fcf;fill-opacity:1;stroke:#729fcf;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m -2.8820684,288.47191 c 1.063058,-0.37797 5.6696427,-1.93713 6.0239954,-1.84263 0.3543528,0.0945 2.3387278,1.6064 2.3387278,1.6064 0,0 0.921317,2.36235 0.9921875,2.50409 -0.2160637,0.14174 0.3801847,2.64583 0.9213169,2.74033 -0.2026196,0.2755 1.5410428,2.33431 2.4804688,1.58277 l 1.441034,0.28348 c -0.0207,0.22769 1.234966,0.7992 1.937127,1.01582 0.896772,0.27666 1.322918,2.19698 1.322918,2.19698 l -16.8908111,-0.11812 z"
+       id="path834"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cscccccsccc" />
+    <path
+       style="fill:#3465a4;fill-opacity:1;stroke:#729fcf;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m -0.25999398,297.28791 c -0.86601592,-1.04409 -3.38871122,-9.02659 2.35822198,-9.54567 2.368398,-0.21391 2.5010699,1.54674 2.9806904,2.95471 0.4972465,1.45973 1.0317236,3.4403 2.5660155,4.66166 1.5342919,1.22136 4.6201131,0.94831 6.2691741,1.66944"
        id="path859-5"
        inkscape:connector-curvature="0"
@@ -71,7 +84,7 @@
        sodipodi:nodetypes="czzzcsc" />
     <g
        id="g857"
-       transform="translate(0.45829613,1.7386905)">
+       transform="translate(2.5749629,1.2095238)">
       <rect
          y="284.88113"
          x="0.37797621"
