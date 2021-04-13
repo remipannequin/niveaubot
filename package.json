@@ -4,9 +4,12 @@
   "description": "Discord bot to query and alert about river levels",
   "main": "bot.js",
   "dependencies": {
+    "chart.js": "^3.1.0",
+    "chartjs-adapter-date-fns": "^1.1.0-beta.1",
+    "chartjs-node-canvas": "^3.1.0",
+    "date-fns": "^2.20.2",
     "discord.js": "^12.5.3",
-    "node-fetch": "^2.6.1",
-    "sugar": "^2.0.6"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "mocha": "^8.3.2",

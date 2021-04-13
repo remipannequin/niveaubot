@@ -3,3 +3,9 @@
  Data comes form the vigicrue public service and is therefore currently limited to France only.
  
  It is currently at the very first stage of development.
+
+ # Configuration
+
+The bot should be configured with a json file named stations.json that associate keywords with measuring stations.
+
+

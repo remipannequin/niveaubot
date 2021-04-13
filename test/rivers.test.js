@@ -3,7 +3,7 @@ const rivers = require('../rivers');
 
 const fs = require('fs');
 
-const sugar = require('sugar');
+const { isToday } = require('date-fns');
 
 describe('Test command parsing', () => {
    it('should get river name', () => {
@@ -32,6 +32,7 @@ describe('Test command parsing', () => {
 
 });
 
+
 describe('Process reply', () => {
    it('should process json', () => {
       let example_json = fs.readFileSync('./test/example.json');
@@ -39,15 +40,15 @@ describe('Process reply', () => {
       let actual = rivers.processJson(data);
       assert.strictEqual(actual.length, 1097);
       assert.strictEqual(actual[0].value, 4.5);
-      assert.strictEqual(actual[0].date.toISOString().raw, '2021-03-11T23:00:00.000Z');
+      assert.strictEqual(actual[0].date.toISOString(), '2021-03-11T23:00:00.000Z');
       assert.strictEqual(actual[0].location, 'Pulligny');
-      assert.strictEqual(rivers.displayLevel(actual, true), 'Débit à Pulligny, aujourd\'hui à 09:15: 4.6 m3/s');
-      assert.strictEqual(rivers.displayLevel(actual, false), 'Niveau à Pulligny, aujourd\'hui à 09:15: 4.6 m');
+      assert.strictEqual(rivers.displayLevel(actual, true), 'Débit à Pulligny, le lundi 12 avril à 09h15: 4.6 m3/s');
+      assert.strictEqual(rivers.displayLevel(actual, false), 'Niveau à Pulligny, le lundi 12 avril à 09h15: 4.6 m');
       let actual2 = [];
 
       actual2.push(actual[20]); //2021-03-12T19:00:00+01:00
-      assert.strictEqual(actual2[0].date.toISOString().raw, '2021-03-12T19:00:00.000Z');
-      assert.strictEqual(rivers.displayLevel(actual2, true), 'Débit à Pulligny, le vendredi 12 mars à 20:00: 5.7 m3/s');
+      assert.deepStrictEqual(actual2[0].date, new Date('2021-03-12T19:00:00.000Z'));
+      assert.strictEqual(rivers.displayLevel(actual2, true), 'Débit à Pulligny, le vendredi 12 mars à 20h00: 5.7 m3/s');
 
    })
 });
@@ -55,11 +56,11 @@ describe('Process reply', () => {
 
 describe('Sugar date test', () => {
    it('should parse date', () => {
-      let d = sugar.Date('2021-03-12T19:00:00+01:00');
-      assert.strictEqual(d.toISOString().raw, '2021-03-12T18:00:00.000Z');
-      assert.strictEqual(d.isToday().raw, false);
-      d = sugar.Date();
-      assert.strictEqual(d.isToday().raw, true);
+      let d = new Date('2021-03-12T19:00:00+01:00');
+      assert.strictEqual(d.toString(), 'Fri Mar 12 2021 19:00:00 GMT+0100 (GMT+01:00)');
+      assert.strictEqual(isToday(d), false);
+      d = new Date();
+      assert.strictEqual(isToday(d), true);
    })
 });
 
