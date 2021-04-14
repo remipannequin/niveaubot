@@ -66,15 +66,33 @@ describe('Sugar date test', () => {
 
 
 describe('Station DB', () => {
-   it('should return station ID', () => {
-      assert.strictEqual(rivers.searchStation("Moselle"), 'A550061001');
-      assert.strictEqual(rivers.searchStation("moselle"), 'A550061001');
-      assert.strictEqual(rivers.searchStation("psv"),     'A550061001');
-      assert.strictEqual(rivers.searchStation("Madon"),   'A543101001');
-      assert.strictEqual(rivers.searchStation("madon"),   'A543101001');
-      assert.strictEqual(rivers.searchStation("Épinal"),  "A443064001");
-      assert.strictEqual(rivers.searchStation("épinal"),  "A443064001");
-      assert.strictEqual(rivers.searchStation("Epinal"),  "A443064001");
-      assert.strictEqual(rivers.searchStation("epinâl"),  "A443064001");
-   })
+   it('should return an entry in stations.json', () => {
+      return rivers.searchStation("Moselle")
+         .then( (r)=>assert.strictEqual(r, 'A550061001'));
+   });
+   it('should return station ID (ignore case)', () => {
+      return rivers.searchStation("moselle").then((r)=>assert.strictEqual(r, 'A550061001'));
+   });
+   it('should return station ID (another keyword)', () => {
+      return rivers.searchStation("psv").then((r)=>assert.strictEqual(r, 'A550061001'));
+   });
+   it('should return another entry', () => {
+      return rivers.searchStation("Madon").then((r)=>assert.strictEqual(r, 'A543101001'));
+   });
+   it('should return station ID (ignore case and accents)', () => {
+      return rivers.searchStation("épinÂl").then((r)=>assert.strictEqual(r, 'A443064001'));
+   });
+
+   it('should return station ID from online', () => {
+      return rivers.searchStation("Apatou").then((r)=>assert.strictEqual(r, '5041000101'));
+   });
+});
+
+
+describe('Get Station entry form online service', () => {
+   
+   it('should return the online stations names and IDs', () => {
+      return rivers.getAllStations()
+         .then((db)=>assert.strictEqual(db.length, 2060));
+   });
 });

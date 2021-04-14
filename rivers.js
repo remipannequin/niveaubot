@@ -48,8 +48,8 @@ exports.parseCmd = function(msg) {
         
     fetch(url)
         .then(resp => resp.json())
-        .then(json => rivers.processJson(json))
-        .then(obs => rivers.displayLevel(obs, flow))
+        .then(json => processJson(json))
+        .then(obs => displayLevel(obs, flow))
         .then(cb)
 }
 
@@ -120,7 +120,7 @@ exports.displayLevel = function(obs, flow) {
  * @param {} cb callback
  */
 exports.query = function (cmd, cb) {
-    let stationid = rivers.searchStation(cmd.location);
+    let stationid = searchStation(cmd.location);
     //Check value is right
     if (stationid != null) {
         queryRiverLevel(stationid, cb, cmd.flow);
@@ -129,17 +129,42 @@ exports.query = function (cmd, cb) {
 
 
 /**
+ * Search a station on the online service
+ * 
+ * @param {string} name 
+ */
+ exports.getAllStations = async function () {
+    let url = 'https://www.vigicrues.gouv.fr/services/1/StaEntVigiCru.jsonld/';
+  
+    // Query webservice for list of stations
+    let allStationsDb = [];
+    let resp = await fetch(url);
+    let json = await resp.json();
+    for (const it of json['vic:StaEntVigiCru']) {
+        let entry = {
+            label: it['vic:LbEntVigiCru'],
+            id: it["vic:CdEntVigiCru"]};
+        // Add in cache
+        allStationsDb.push(entry);
+    }
+    return allStationsDb;
+}
+
+
+/**
  * 
  * @param {string} name 
  * @returns 
  */
-exports.searchStation = function (name) {
+exports.searchStation = async function (name) {
     if (module.stationDb == null) {
         //TODO check file existence and format
         let station_json = fs.readFileSync('stations.json');
         let data = JSON.parse(station_json);
         module.stationDb = data['stations'];
         module.defaultStation = data['default'];
+        let onlineSta = await exports.getAllStations();
+        module.allStationsDb = onlineSta;
     }
     for (const iter of module.stationDb) {
         for (const k of iter["keys"]) {
@@ -148,8 +173,19 @@ exports.searchStation = function (name) {
             }
         }
     }
-    if (rivers.hasOwnProperty("defaultStation")) {
-        return rivers.defaultStation;
+    //Search Online
+    for (let it of module.allStationsDb) {
+        if (name.localeCompare(it.label, 'fr', { sensitivity: 'base' }) == 0) {
+            return it.id;
+        }
+    }
+   
+
+    //Return the default
+    if (module.hasOwnProperty("defaultStation")) {
+        return module.defaultStation;
     }
     console.log("unable to find a stationID for "+name);
 }
+
+
