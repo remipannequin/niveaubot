@@ -49,7 +49,7 @@ exports.parseCmd = function(msg) {
     fetch(url)
         .then(resp => resp.json())
         .then(json => exports.processJson(json))
-        .then(obs => exports.displayLevel(obs, flow))
+        .then(obs => exports.displayLevel(obs))
         .then(cb)
 }
 
@@ -58,10 +58,51 @@ exports.parseCmd = function(msg) {
  * Create a new hydro observation object
  */
 class ObsHydro {
-    constructor(d, loc) {
-        this.date = new Date(d['DtObsHydro']);
-        this.value = d['ResObsHydro'];
+    constructor(loc, id, mes) {
+        this.obs = [];
+        this.station = id;
         this.location = loc;
+        this.type = mes;
+    }
+
+    addObs(d) {
+        let elt = {date: new Date(d['DtObsHydro']), value: d['ResObsHydro']};
+        this.obs.push(elt);
+    }
+
+    last() {
+        return this.obs[this.obs.length-1];
+    }
+
+    isEmpty() {
+        return this.obs.length === 0;
+    }
+
+    describe() {
+        // Test that obs has at least one element
+        if (this.isEmpty()) {
+            console.log('warning: no data for this station')
+            return;
+        }
+        let last_obs = this.last();
+        let d = last_obs.date;
+        //TODO: try to evaluate evolution (on the last 6h)
+    
+        let date, measurement, unit;
+        if (isToday(d)) {
+            date = `aujourd'hui à ${format(d, "HH'h'mm")}`;
+        } else {
+            date = format(d, "'le' EEEE d MMMM 'à' HH'h'mm", {locale: fr});
+        }
+        if (this.type === 'Q') {
+            measurement = 'Débit';
+            unit = 'm3/s'
+        } else {
+            measurement = 'Niveau';
+            unit = 'm';
+        }
+        
+        return `${measurement} à ${this.location}, ${date}: ${last_obs.value} ${unit}`;
     }
 }
 
@@ -71,15 +112,19 @@ class ObsHydro {
  * Process the hydrology data: return the values
  * 
  * @param json 
- * @returns a ObsHydro[]
+ * @returns a ObsHydro
  */
 exports.processJson = function(json) {
     let obs = json['Serie']['ObssHydro']
     let station = json['Serie']['LbStationHydro'];
+    let id = json['Serie']['CdStationHydro'];
+    let mes = json['Serie']['GrdSerie'];
+    //TODO: follow link to get the river name ('LbCoursEau')
+    
     // Turn them into an array of ObsHydro
-    let result = [];
+    let result = new ObsHydro(station, id, mes)
     for (const iterator of obs) {
-        result.push(new ObsHydro(iterator, station))
+        result.addObs(iterator);
     }
     return result;
 }
@@ -88,36 +133,18 @@ exports.processJson = function(json) {
 /**
  * Transform the hydrological data into a analysis message
  * 
- * @param {*} obs the data to analyse
- * @param flow if true: streamflow, else height
+ * @param {ObsHydro} data the data to analyse
  * @returns a string resulting from the analysis of the data
  */
-exports.displayLevel = function(obs, flow) {
-    // Test that obs has at least one element
-    if (obs == null || obs.length == 0) {
-        console.log('warning: no data for this station')
-        return;
-    }
-    let last_obs = obs[obs.length-1];
-    let d = last_obs.date;
-    //TODO: try to evaluate evolution (on the last 6h)
-
-    let date, mesure, unit;
-    if (isToday(d)) {
-        date = `aujourd'hui à ${format(d, "HH'h'mm")}`;
-    } else {
-        date = format(d, "'le' EEEE d MMMM 'à' HH'h'mm", {locale: fr});
-    }
-    if (flow) {
-        mesure = 'Débit';
-        unit = 'm3/s'
-    } else {
-        mesure = 'Niveau';
-        unit = 'm';
-    }
-    return `${mesure} à ${last_obs.location}, ${date}: ${last_obs.value} ${unit}`;
+exports.displayLevel = function(data) {
+    return data.describe();
 }
 
+exports.getEmbed = function(data) {
+    let detailurl = `https://www.vigicrues.gouv.fr/niv3-station.php?CdEntVigiCru=2&CdStationHydro=${data.station}&GrdSerie=${data.mesure}&ZoomInitial=1`;
+
+
+}
 
 /**
  * 

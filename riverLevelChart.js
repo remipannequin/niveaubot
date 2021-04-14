@@ -55,12 +55,12 @@ function example_data() {
     };
 }
 
-exports.format_data = function (obs) {
-    let range_end = obs[obs.length-1].date;
+exports.format_data = function (data) {
+    let range_end = data.last().date;
     let range_start = addHours(range_end, -6);//end - 6h
     let xy = [];
     //Only keep last 6 hours of data
-    for (iter of obs) {
+    for (iter of data.obs) {
         if (isWithinInterval(iter.date, {start: range_start, end: range_end})) {
             xy.push({x: iter.date, y: iter.value});
         }
