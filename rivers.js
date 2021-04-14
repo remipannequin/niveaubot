@@ -49,7 +49,7 @@ exports.parseCmd = function(msg) {
     fetch(url)
         .then(resp => resp.json())
         .then(json => exports.processJson(json))
-        .then(obs => exports.displayLevel(obs))
+        //.then(obs => exports.displayLevel(obs))
         .then(cb)
 }
 
@@ -104,6 +104,38 @@ class ObsHydro {
         
         return `${measurement} à ${this.location}, ${date}: ${last_obs.value} ${unit}`;
     }
+
+    embedTitle() {
+        let last_obs = this.last();
+        let d = last_obs.date;
+    
+        let date, measurement;
+        if (isToday(d)) {
+            date = `aujourd'hui à ${format(d, "HH'h'mm")}`;
+        } else {
+            date = format(d, "'le' EEEE d MMMM 'à' HH'h'mm", {locale: fr});
+        }
+        if (this.type === 'Q') {
+            measurement = 'Débit';
+        } else {
+            measurement = 'Niveau';
+        }
+        return `${measurement} à ${this.location}, ${date}`;
+    }
+
+    embedValue() {
+        let last_obs = this.last();
+
+        let unit;
+        if (this.type === 'Q') {
+            unit = 'm3/s'
+        } else {
+            unit = 'm';
+        }
+        let detailurl = `https://www.vigicrues.gouv.fr/niv3-station.php?CdEntVigiCru=2&CdStationHydro=${this.station}&GrdSerie=${this.type}&ZoomInitial=1`;
+        return `[${last_obs.value} ${unit}](${detailurl})`;
+    }
+
 }
 
 
@@ -141,9 +173,7 @@ exports.displayLevel = function(data) {
 }
 
 exports.getEmbed = function(data) {
-    let detailurl = `https://www.vigicrues.gouv.fr/niv3-station.php?CdEntVigiCru=2&CdStationHydro=${data.station}&GrdSerie=${data.mesure}&ZoomInitial=1`;
-
-
+   
 }
 
 /**

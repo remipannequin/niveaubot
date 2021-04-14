@@ -9,7 +9,7 @@
  */
 
 // Import the discord.js module
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
 
 // Create an instance of a Discord client
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
@@ -18,6 +18,7 @@ const fs = require('fs');
 
 //Module where we parse commands, query hydro services, and format response
 const rivers = require('./rivers');
+const charter = require('./riverLevelChart');
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -37,9 +38,19 @@ client.on('message', message => {
     let cmd = rivers.parseCmd(message.content);
     if (cmd != null) {
         // Send response to the same channel
-        rivers.query(cmd, msg => {
-          if (msg!=null && msg.length >0) {
-            message.channel.send(msg);
+        rivers.query(cmd, data => {
+          if (data!=null) {
+            
+            if (!data.isEmpty()) {
+              const embed = new MessageEmbed();//.setTitle('Titre TODO');
+              embed.addField(data.embedTitle(), data.embedValue());
+              charter.toImgFile(data, '/tmp/chart.png').then(()=>{
+                embed.attachFiles(['/tmp/chart.png'])
+	              embed.setImage('attachment://chart.png');
+                message.channel.send(embed);
+              });
+              
+            }
           }
         });
     }

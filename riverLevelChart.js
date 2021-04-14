@@ -5,8 +5,8 @@ const {addHours, isWithinInterval} = require('date-fns');
 
 const mod = {};
 
-const w = 400; //px
-const h = 200; //px
+const w = 300; //px
+const h = 100; //px
 
 module.canvasRenderService = new ChartJSNodeCanvas({width: w, height: h});
 
