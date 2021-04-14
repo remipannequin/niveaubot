@@ -44,7 +44,7 @@ exports.parseCmd = function(msg) {
     if (flow) {
         url += '&GrdSerie=Q'; 
     }
-    console.log('querying station '+stationid)
+    console.log('querying station '+stationid+'(flow='+flow+')');
         
     fetch(url)
         .then(resp => resp.json())
@@ -93,8 +93,11 @@ exports.processJson = function(json) {
  * @returns a string resulting from the analysis of the data
  */
 exports.displayLevel = function(obs, flow) {
-    //TODO test that obs has at least one element
-    
+    // Test that obs has at least one element
+    if (obs == null || obs.length == 0) {
+        console.log('warning: no data for this station')
+        return;
+    }
     let last_obs = obs[obs.length-1];
     let d = last_obs.date;
     //TODO: try to evaluate evolution (on the last 6h)

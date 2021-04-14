@@ -37,7 +37,11 @@ client.on('message', message => {
     let cmd = rivers.parseCmd(message.content);
     if (cmd != null) {
         // Send response to the same channel
-        rivers.query(cmd, msg => message.channel.send(msg));
+        rivers.query(cmd, msg => {
+          if (msg!=null && msg.length >0) {
+            message.channel.send(msg);
+          }
+        });
     }
   }
 });
