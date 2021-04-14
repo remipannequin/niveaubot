@@ -196,19 +196,23 @@ exports.query = async function (cmd, cb) {
  * @param {string} name 
  */
  exports.getAllStations = async function () {
-    let url = 'https://www.vigicrues.gouv.fr/services/1/StaEntVigiCru.jsonld/';
+    let url = 'https://www.vigicrues.gouv.fr/services/station.json/';
   
     // Query webservice for list of stations
     let allStationsDb = [];
     let resp = await fetch(url);
     let json = await resp.json();
-    for (const it of json['vic:StaEntVigiCru']) {
-        let label = it['vic:LbEntVigiCru'];
-        let entry = {
-            label: label.split(' ')[0],//Only take fisrt word
-            id: it["vic:CdEntVigiCru"]};
-        // Add in cache
-        allStationsDb.push(entry);
+    for (const it of json['Stations']) {
+        let label = it['LbStationHydro'];
+        let river = it['LbCoursEau']
+        allStationsDb.push(
+            {label: label.split(' ')[0],//Only take fisrt word
+             id:    it["CdStationHydro"]}
+        );
+        allStationsDb.push(
+            {label: river.split(' ')[0],//Only take fisrt word
+             id:    it["CdStationHydro"]}
+        );
     }
     return allStationsDb;
 }

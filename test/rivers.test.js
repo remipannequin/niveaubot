@@ -92,6 +92,6 @@ describe('Get Station entry form online service', () => {
    
    it('should return the online stations names and IDs', () => {
       return rivers.getAllStations()
-         .then((db)=>assert.strictEqual(db.length, 2060));
+         .then((db)=>assert.strictEqual(db.length, 2060*2));
    });
 });
