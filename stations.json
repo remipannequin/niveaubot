@@ -24,6 +24,10 @@
         {
             "keys": ["Meuse", "Commercy"],
             "id": "B213001001"
+        },
+        {
+            "keys": ["Cure"],
+            "id": "H212202001"
         }
     ],
 "default": "A550061001"
