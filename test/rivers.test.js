@@ -86,6 +86,10 @@ describe('Station DB', () => {
    it('should return station ID from online', () => {
       return rivers.searchStation("Apatou").then((r)=>assert.strictEqual(r, '5041000101'));
    });
+   it('should return station ID from online (only first word)', () => {
+      return rivers.searchStation("Metz").then((r)=>assert.strictEqual(r, 'A743061001'));
+   });
+
 });
 
 

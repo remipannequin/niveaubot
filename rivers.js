@@ -48,8 +48,8 @@ exports.parseCmd = function(msg) {
         
     fetch(url)
         .then(resp => resp.json())
-        .then(json => processJson(json))
-        .then(obs => displayLevel(obs, flow))
+        .then(json => exports.processJson(json))
+        .then(obs => exports.displayLevel(obs, flow))
         .then(cb)
 }
 
@@ -93,6 +93,8 @@ exports.processJson = function(json) {
  * @returns a string resulting from the analysis of the data
  */
 exports.displayLevel = function(obs, flow) {
+    //TODO test that obs has at least one element
+    
     let last_obs = obs[obs.length-1];
     let d = last_obs.date;
     //TODO: try to evaluate evolution (on the last 6h)
@@ -119,8 +121,8 @@ exports.displayLevel = function(obs, flow) {
  * @param {QueryCmd} cmd command to execute
  * @param {} cb callback
  */
-exports.query = function (cmd, cb) {
-    let stationid = searchStation(cmd.location);
+exports.query = async function (cmd, cb) {
+    let stationid = await exports.searchStation(cmd.location);
     //Check value is right
     if (stationid != null) {
         queryRiverLevel(stationid, cb, cmd.flow);
@@ -141,8 +143,9 @@ exports.query = function (cmd, cb) {
     let resp = await fetch(url);
     let json = await resp.json();
     for (const it of json['vic:StaEntVigiCru']) {
+        let label = it['vic:LbEntVigiCru'];
         let entry = {
-            label: it['vic:LbEntVigiCru'],
+            label: label.split(' ')[0],//Only take fisrt word
             id: it["vic:CdEntVigiCru"]};
         // Add in cache
         allStationsDb.push(entry);
@@ -180,11 +183,6 @@ exports.searchStation = async function (name) {
         }
     }
    
-
-    //Return the default
-    if (module.hasOwnProperty("defaultStation")) {
-        return module.defaultStation;
-    }
     console.log("unable to find a stationID for "+name);
 }
 
