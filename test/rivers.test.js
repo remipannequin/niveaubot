@@ -52,7 +52,7 @@ describe('Process reply', () => {
 describe('date-fns test', () => {
    it('should parse date', () => {
       let d = new Date('2021-03-12T19:00:00+01:00');
-      assert.strictEqual(d.toString(), 'Fri Mar 12 2021 19:00:00 GMT+0100 (GMT+01:00)');
+      assert.strictEqual(d.toString(), 'Fri Mar 12 2021 19:00:00 GMT+0100 (heure normale d’Europe centrale)');
       assert.strictEqual(isToday(d), false);
       d = new Date();
       assert.strictEqual(isToday(d), true);
@@ -92,6 +92,6 @@ describe('Get Station entry form online service', () => {
    
    it('should return the online stations names and IDs', () => {
       return rivers.getAllStations()
-         .then((db)=>assert.strictEqual(db.length, 2060*2));
+         .then((db)=>assert.strictEqual(db.length, 2194*2));
    });
 });

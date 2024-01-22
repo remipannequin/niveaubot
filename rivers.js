@@ -2,7 +2,7 @@
 
 
 // Use node-fetch to get river level data
-const fetch = require('node-fetch');
+const fetch = (...args) => import('node-fetch').then (({default: fetch}) => fetch(...args));
 
 const fs = require('fs');
 

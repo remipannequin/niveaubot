@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+
 require('chartjs-adapter-date-fns');
 const {addHours, isWithinInterval} = require('date-fns');
 
@@ -93,7 +94,7 @@ exports.getConfiguration = function (obs) {
                 },
                 y: {
                     type: 'linear',
-                    beginAtZero: true
+                    //beginAtZero: true
                 }
             }
         }

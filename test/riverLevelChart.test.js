@@ -24,6 +24,7 @@ describe('Test graph generation', () => {
 
     it('should generate an image', () => {
         exp_buf = fs.readFileSync('test/chart.png');
+	riverLevelChart.toImgFile(obs, 'test/actual-chart.png')
         return riverLevelChart.createChart(obs)
             .then((buf)=>assert.deepStrictEqual(buf, exp_buf));
     });

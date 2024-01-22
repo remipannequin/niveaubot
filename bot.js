@@ -9,7 +9,7 @@
  */
 
 // Import the discord.js module
-const { Client, Intents, MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageEmbed, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
@@ -40,16 +40,15 @@ client.on('message', message => {
         // Send response to the same channel
         rivers.query(cmd, data => {
           if (data!=null) {
-            
             if (!data.isEmpty()) {
               const embed = new MessageEmbed();//.setTitle('Titre TODO');
-              embed.addField(data.embedTitle(), data.embedValue());
-              charter.toImgFile(data, '/tmp/chart.png').then(()=>{
-                embed.attachFiles(['/tmp/chart.png'])
-	              embed.setImage('attachment://chart.png');
-                message.channel.send(embed);
+              embed.addFields({name: data.embedTitle(), value: data.embedValue()});
+              embed.setColor('#0099FF');
+	      charter.toImgFile(data, '/tmp/chart.png').then(()=>{
+                const img = new MessageAttachment('/tmp/chart.png');
+                embed.image = 'attachement://chart.png';
+                message.channel.send({ embeds: [embed], files: [img]} );
               });
-              
             }
           }
         });

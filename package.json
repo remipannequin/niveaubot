@@ -1,22 +1,23 @@
 {
   "name": "niveaubot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Discord bot to query and alert about river levels",
   "main": "bot.js",
   "dependencies": {
-    "chart.js": "^3.1.0",
-    "chartjs-adapter-date-fns": "^1.1.0-beta.1",
-    "chartjs-node-canvas": "^3.1.0",
+    "chartjs-adapter-date-fns": "1.1.0-beta.1",
+    "chartjs-node-canvas": "4.1.6",
     "date-fns": "^2.20.2",
-    "discord.js": "^12.5.3",
-    "node-fetch": "^2.6.1"
+    "discord.js": "13.17.1",
+    "node-fetch": "3.3.2",
+    "pm2": "5.3.1"
   },
   "devDependencies": {
-    "mocha": "^8.3.2",
+    "mocha": "^10.2.0",
     "nyc": "^15.1.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node bot.js"
   },
   "repository": {
     "type": "git",
